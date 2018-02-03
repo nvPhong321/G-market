@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.phong.g_market.MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- search -->
+
+        <RelativeLayout
+            android:id="@+id/relLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@android:color/holo_red_dark"
+            android:gravity="center">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginRight="50dp"
+                android:background="@android:drawable/dialog_holo_light_frame">
+
+                <ImageView
+                    android:id="@+id/imv_open_list"
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:src="@drawable/ic_list_menu" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@+id/imv_open_list"
+                    android:background="@android:color/transparent"
+                    android:hint="Bạn tìm gì hôm nay ?"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp" />
+            </RelativeLayout>
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_cart" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/relLayout1">
+            
+            <ViewStub
+                android:layout="@layout/category_recycler"
+                android:id="@+id/stub_list"
+                android:inflatedId="@+id/showLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <ViewStub
+                android:layout="@layout/category_grid"
+                android:id="@+id/stub_grid"
+                android:inflatedId="@+id/showLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/btn_grid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="28dp"
+                android:layout_marginRight="28dp"
+                android:clickable="true"
+                android:elevation="6dp"
+                android:src="@drawable/ic_grid"
+                app:backgroundTint="@android:color/holo_red_dark"
+                app:fabSize="mini"
+                app:pressedTranslationZ="15dp" />
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/btn_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="28dp"
+                android:layout_marginRight="28dp"
+                android:clickable="true"
+                android:elevation="6dp"
+                android:src="@drawable/ic_list"
+                app:backgroundTint="@android:color/holo_red_dark"
+                app:fabSize="mini"
+                app:pressedTranslationZ="15dp"
+                android:visibility="gone"/>
+        </RelativeLayout>
+    </RelativeLayout>
+</android.support.constraint.ConstraintLayout>

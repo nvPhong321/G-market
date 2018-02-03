@@ -48,21 +48,24 @@
                 android:layout_height="30dp" />
         </RelativeLayout>
 
-        <!-- view flipper -->
+        <!-- view paper -->
         <RelativeLayout
             android:id="@+id/relLayout2"
             android:layout_below="@+id/relLayout1"
             android:layout_width="match_parent"
             android:layout_height="150dp">
+
             <android.support.v4.view.ViewPager
-                android:id="@+id/viewPaper"
+                android:id="@+id/viewPager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
+
             <me.relex.circleindicator.CircleIndicator
                 android:id="@+id/indicator"
-                android:layout_alignParentBottom="true"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"/>
+                android:layout_height="48dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"/>
         </RelativeLayout>
 
         <!-- category -->
@@ -75,18 +78,20 @@
             app:cardUseCompatPadding="true">
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="70dp">
+                android:layout_height="100dp">
                 <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rc_category"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
             </RelativeLayout>
         </android.support.v7.widget.CardView>
         <!-- list product -->
         <RelativeLayout
-            android:layout_below="@id/relLayout3"
+            android:layout_below="@+id/relLayout3"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/rc_product"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
         </RelativeLayout>
