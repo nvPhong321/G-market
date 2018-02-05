@@ -1,5 +1,6 @@
-package com.example.phong.g_market;
+package com.example.phong.g_market.product;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,16 +9,17 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.GridView;
 
+import com.example.phong.g_market.R;
 import com.example.phong.g_market.adapter.ProductAdapter;
 import com.example.phong.g_market.adapter.ProductGridAdapter;
 import com.example.phong.g_market.model.Product;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CategoryProductActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -33,6 +35,10 @@ public class CategoryProductActivity extends AppCompatActivity implements View.O
     static final int VIEW_MODE_GRID = 0;
 
     private ArrayList<Product> arrdataProduct;
+
+    private String mCategory;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +62,13 @@ public class CategoryProductActivity extends AppCompatActivity implements View.O
         lnProduct.setOrientation(LinearLayoutManager.VERTICAL);
         rcProduct.setLayoutManager(lnProduct);
 
-        setupProduct();
+        try {
+            mCategory = getCategory();
+            Log.d("data" , mCategory);
+            setupProduct();
+        } catch (NullPointerException e) {
+
+        }
 
         SharedPreferences sharedPreferences = getSharedPreferences("ViewMode",MODE_PRIVATE);
         currentView = sharedPreferences.getInt("CurrentViewMode",VIEW_MODE_RECYCLER);
@@ -115,9 +127,22 @@ public class CategoryProductActivity extends AppCompatActivity implements View.O
         }
     }
 
+    private String getCategory() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            Bundle bundle = intent.getBundleExtra("bundle");
+            if (bundle != null) {
+                return bundle.getString("data");
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
 
 
-    private List<Product> setupProduct(){
+    private void setupProduct(){
         Bitmap clock = BitmapFactory.decodeResource(getResources(),R.drawable.clock);
         Bitmap tivi = BitmapFactory.decodeResource(getResources(),R.drawable.tivi);
         Bitmap smartphone = BitmapFactory.decodeResource(getResources(),R.drawable.smart_phone);
@@ -125,12 +150,34 @@ public class CategoryProductActivity extends AppCompatActivity implements View.O
         Bitmap laptop = BitmapFactory.decodeResource(getResources(),R.drawable.laptop);
         Bitmap headphone = BitmapFactory.decodeResource(getResources(),R.drawable.headphone);
 
-        arrdataProduct.add(new Product("Đồng hồ đeo tay abcxyz", "10.750.000 Đ", "ABC shop",clock));
-        arrdataProduct.add(new Product("Ti vi sony G9756", "14.500.000 Đ", "Nguyễn Kim",tivi));
-        arrdataProduct.add(new Product("Điện thoại Asus Zenfone 3 ZE012", "8.000.000 Đ", "Thế giới di động",smartphone));
-        arrdataProduct.add(new Product("Máy ảnh sony","14.500.000 Đ", "Nguyễn Kim",camera));
-        arrdataProduct.add(new Product("Laptop Asus P550l","15.500.000 Đ", "Nguyễn Kim",laptop));
-        arrdataProduct.add(new Product("Tai nghe sony N1","4.990.000 Đ", "Nguyễn Kim",headphone));
-        return arrdataProduct;
+        if (mCategory.equals("Đồng hồ")){
+            arrdataProduct.clear();
+            arrdataProduct.add(new Product("Đồng hồ đeo tay abcxyz", "10.750.000 Đ", "ABC shop",clock));
+        }else if (mCategory.equals("Ti vi")){
+
+            arrdataProduct.clear();
+            arrdataProduct.add(new Product("Ti vi sony G9756", "14.500.000 Đ", "Nguyễn Kim",tivi));
+
+        }else if(mCategory.equals("Điện thoại")){
+
+            arrdataProduct.clear();
+            arrdataProduct.add(new Product("Điện thoại Asus Zenfone 3 ZE012", "8.000.000 Đ", "Thế giới di động",smartphone));
+
+        }else if(mCategory.equals("Máy ảnh")){
+
+            arrdataProduct.clear();
+            arrdataProduct.add(new Product("Máy ảnh sony","14.500.000 Đ", "Nguyễn Kim",camera));
+
+        }else if(mCategory.equals("Laptop")){
+
+            arrdataProduct.clear();
+            arrdataProduct.add(new Product("Laptop Asus P550l","15.500.000 Đ", "Nguyễn Kim",laptop));
+
+        }else if(mCategory.equals("Tai nghe")){
+
+            arrdataProduct.clear();
+            arrdataProduct.add(new Product("Tai nghe sony N1","4.990.000 Đ", "Nguyễn Kim",headphone));
+
+        }
     }
 }

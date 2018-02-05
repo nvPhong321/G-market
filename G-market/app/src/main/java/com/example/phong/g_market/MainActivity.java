@@ -16,6 +16,8 @@ import com.example.phong.g_market.adapter.CategoryAdapter;
 import com.example.phong.g_market.adapter.ProductAdapter;
 import com.example.phong.g_market.model.Category;
 import com.example.phong.g_market.model.Product;
+import com.example.phong.g_market.product.CategoryProductActivity;
+import com.example.phong.g_market.product.ViewProductActivity;
 import com.example.phong.g_market.ultil.RecyclerItemClickListener;
 
 import java.util.ArrayList;
@@ -109,6 +111,25 @@ public class MainActivity extends AppCompatActivity {
         adapterCateGory = new CategoryAdapter(arrdata);
         adapterCateGory.notifyDataSetChanged();
         rcCategory.setAdapter(adapterCateGory);
+
+        rcCategory.addOnItemTouchListener(
+                new RecyclerItemClickListener(this, rcCategory ,new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        // do whatever
+                        String data = arrdata.get(position).getName();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("data",data);
+                        Intent intent = new Intent(MainActivity.this, CategoryProductActivity.class);
+                        intent.putExtra("bundle",bundle);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+
+                    }
+                })
+        );
     }
 
     private void setupProduct(){
@@ -130,11 +151,15 @@ public class MainActivity extends AppCompatActivity {
         adapterProduct.notifyDataSetChanged();
         rcProduct.setAdapter(adapterProduct);
 
-        rcCategory.addOnItemTouchListener(
+        rcProduct.addOnItemTouchListener(
                 new RecyclerItemClickListener(this, rcCategory ,new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
                         // do whatever
-                        Intent intent = new Intent(MainActivity.this, CategoryProductActivity.class);
+//                        String data = arrdataProduct.get(position).getName();
+//                        Bundle bundle = new Bundle();
+//                        bundle.putString("data",data);
+                        Intent intent = new Intent(MainActivity.this, ViewProductActivity.class);
+//                        intent.putExtra("bundle",bundle);
                         startActivity(intent);
                     }
 
