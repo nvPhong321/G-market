@@ -19,6 +19,7 @@
         <activity android:name=".product.CategoryProductActivity"/>
         <activity android:name=".product.ViewProductActivity"/>
         <activity android:name=".cart.AddCartActivity"/>
+        <activity android:name=".profile.EditProfileActivity"/>
     </application>
 
 </manifest>

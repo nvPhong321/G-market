@@ -12,7 +12,7 @@
         <RelativeLayout
             android:id="@+id/relLayout1"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:background="@android:color/holo_red_dark"
             android:padding="10dp">
 
@@ -27,11 +27,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
+                android:layout_toRightOf="@id/imvBack"
                 android:layout_centerVertical="true"
                 android:text="Chi tiết sản phẩm"
                 android:textColor="@android:color/white"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <ImageView
@@ -45,7 +45,7 @@
         <RelativeLayout
             android:id="@+id/relLayout2"
             android:layout_width="match_parent"
-            android:layout_height="350dp"
+            android:layout_height="370dp"
             android:layout_below="@id/relLayout1">
 
             <ImageView

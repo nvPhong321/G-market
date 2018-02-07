@@ -15,28 +15,30 @@
         <RelativeLayout
             android:id="@+id/relLayout1"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:background="@android:color/holo_red_dark"
             android:gravity="center">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="50dp"
                 android:layout_marginRight="50dp"
+                android:layout_marginLeft="10dp"
                 android:background="@android:drawable/dialog_holo_light_frame">
 
                 <ImageView
-                    android:id="@+id/imv_open_list"
+                    android:id="@+id/imvBack"
                     android:layout_width="20dp"
                     android:layout_height="30dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
-                    android:src="@drawable/ic_list_menu" />
+                    android:src="@drawable/ic_back_black" />
 
                 <EditText
+                    android:textSize="12sp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_toRightOf="@+id/imv_open_list"
+                    android:layout_toRightOf="@+id/imvBack"
                     android:background="@android:color/transparent"
                     android:hint="Bạn tìm gì hôm nay ?"
                     android:paddingLeft="10dp"

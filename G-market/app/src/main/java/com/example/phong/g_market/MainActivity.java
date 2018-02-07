@@ -5,11 +5,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewStub;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.example.phong.g_market.adapter.BannerAdapter;
 import com.example.phong.g_market.adapter.CategoryAdapter;
@@ -18,6 +24,7 @@ import com.example.phong.g_market.model.Category;
 import com.example.phong.g_market.model.Product;
 import com.example.phong.g_market.product.CategoryProductActivity;
 import com.example.phong.g_market.product.ViewProductActivity;
+import com.example.phong.g_market.profile.EditProfileActivity;
 import com.example.phong.g_market.ultil.RecyclerItemClickListener;
 
 import java.util.ArrayList;
@@ -26,7 +33,7 @@ import java.util.TimerTask;
 
 import me.relex.circleindicator.CircleIndicator;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static ViewPager viewPager;
     private RecyclerView rcCategory,rcProduct;
@@ -40,6 +47,15 @@ public class MainActivity extends AppCompatActivity {
     CircleIndicator indicator;
     private static final Integer[] mBanner= {R.drawable.banner1,R.drawable.banner2,R.drawable.banner3,R.drawable.banner4};
 
+    ImageView imvMenu;
+    private DrawerLayout drawerMenu;
+
+    ViewStub stubLogin,stubLogout;
+
+    LinearLayout btnLogout;
+    RelativeLayout btnMenuCart,btnMenuShop,btnMenuInfo,btnMenuOrder;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +64,18 @@ public class MainActivity extends AppCompatActivity {
         imvBanner = new ArrayList<>();
         arrdata = new ArrayList<Category>();
         arrdataProduct = new ArrayList<>();
+
+        imvMenu = (ImageView) findViewById(R.id.imv_open_list);
+        drawerMenu = (DrawerLayout) findViewById(R.id.drawer_layout);
+        btnLogout = (LinearLayout) findViewById(R.id.btn_logout);
+
+        btnMenuCart = (RelativeLayout) findViewById(R.id.rel_cart);
+        btnMenuInfo = (RelativeLayout) findViewById(R.id.rel_profile_info);
+        btnMenuOrder = (RelativeLayout) findViewById(R.id.rel_order);
+        btnMenuShop = (RelativeLayout) findViewById(R.id.rel_my_shop);
+
+        stubLogin = (ViewStub) findViewById(R.id.stub_login);
+        stubLogout = (ViewStub) findViewById(R.id.stub_no_login);
 
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         indicator = (CircleIndicator) findViewById(R.id.indicator);
@@ -64,6 +92,56 @@ public class MainActivity extends AppCompatActivity {
         setupViewPaper();
         setupCategory();
         setupProduct();
+
+        settupMenu();
+    }
+
+    private void settupMenu(){
+        imvMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawerMenu.openDrawer(GravityCompat.START);
+                switchView();
+            }
+        });
+
+        btnMenuOrder.setOnClickListener(this);
+        btnMenuInfo.setOnClickListener(this);
+        btnMenuCart.setOnClickListener(this);
+        btnMenuShop.setOnClickListener(this);
+        btnLogout.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.rel_cart:
+                break;
+            case R.id.rel_my_shop:
+                break;
+            case R.id.rel_order:
+                break;
+            case R.id.rel_profile_info:
+                Intent intent = new Intent(MainActivity.this, EditProfileActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.btn_logout:
+                break;
+        }
+    }
+
+    private void switchView(){
+//        if(VIEW_MODE_RECYCLER == currentView){
+//            stubRecycler.setVisibility(View.VISIBLE);
+//            stubGrid.setVisibility(View.GONE);
+//        }else {
+//            stubGrid.setVisibility(View.VISIBLE);
+//            stubRecycler.setVisibility(View.GONE);
+//        }
+
+        stubLogout.setVisibility(View.VISIBLE);
+        stubLogin.setVisibility(View.GONE);
+        btnLogout.setVisibility(View.GONE);
     }
 
     private void setupViewPaper(){
@@ -170,7 +248,4 @@ public class MainActivity extends AppCompatActivity {
                 })
         );
     }
-
-
-
 }
