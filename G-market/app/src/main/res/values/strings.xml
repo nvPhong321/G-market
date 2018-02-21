@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">G-market</string>
+    <string name="dbname_users">db_users</string>
+    <string name="field_username">username</string>
 </resources>

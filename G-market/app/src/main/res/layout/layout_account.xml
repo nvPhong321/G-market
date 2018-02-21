@@ -14,19 +14,10 @@
             android:layout_width="match_parent"
             android:layout_height="150dp">
 
-            <ViewStub
-                android:id="@+id/stub_no_login"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:inflatedId="@+id/showLayout"
-                android:layout="@layout/nav_header_no_login" />
-
-            <ViewStub
-                android:id="@+id/stub_login"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:inflatedId="@+id/showLayout"
-                android:layout="@layout/nav_header_login" />
+            <include layout="@layout/nav_header_login"
+                android:visibility="invisible"/>
+            <include layout="@layout/nav_header_no_login"
+                android:visibility="visible"/>
         </RelativeLayout>
 
         <RelativeLayout

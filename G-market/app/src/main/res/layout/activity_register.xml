@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_marginBottom="50dp"
+            android:id="@+id/reLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@android:color/holo_red_dark"
+            android:padding="10dp">
+
+            <ImageView
+                android:id="@+id/imvBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_back" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/imvBack"
+                android:text="Đăng kí"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/reLayout2"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_below="@id/reLayout1"
+            android:background="@drawable/white_red_border"
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+            <EditText
+                android:id="@+id/edtNameRegister"
+                android:textColor="@android:color/black"
+                android:hint="Họ và tên"
+                android:paddingLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="#00ffffff"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/reLayout3"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_below="@id/reLayout2"
+            android:background="@drawable/white_red_border"
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+            <ImageView
+                android:id="@+id/imv_mail"
+                android:src="@drawable/ic_mail"
+                android:layout_marginLeft="10dp"
+                android:layout_centerVertical="true"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+            <EditText
+                android:id="@+id/edtEmailRegister"
+                android:textColor="@android:color/black"
+                android:hint="Email"
+                android:paddingLeft="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/white_red_border_left"
+                android:layout_toRightOf="@+id/imv_mail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/reLayout4"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_below="@id/reLayout3"
+            android:background="@drawable/white_red_border"
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+            <ImageView
+                android:id="@+id/imv_password"
+                android:src="@drawable/ic_locked"
+                android:layout_marginLeft="10dp"
+                android:layout_centerVertical="true"
+                android:layout_width="30dp"
+                android:layout_height="25dp" />
+            <EditText
+                android:id="@+id/edtPasswordRegister"
+                android:textColor="@android:color/black"
+                android:paddingLeft="10dp"
+                android:hint="Mật khẩu"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/white_red_border_left"
+                android:layout_toRightOf="@+id/imv_password"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/reLayout5"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_below="@id/reLayout4"
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+            <Button
+                android:id="@+id/btn_register"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:text="Hoàn tất"
+                android:background="@android:color/holo_red_dark"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </RelativeLayout>
+    </RelativeLayout>
+</android.support.constraint.ConstraintLayout>
