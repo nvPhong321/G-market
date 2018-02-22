@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -27,9 +28,11 @@ import android.widget.Toast;
 import com.example.phong.g_market.adapter.BannerAdapter;
 import com.example.phong.g_market.adapter.CategoryAdapter;
 import com.example.phong.g_market.adapter.ProductAdapter;
+import com.example.phong.g_market.cart.AddCartActivity;
 import com.example.phong.g_market.model.Category;
 import com.example.phong.g_market.model.Product;
 import com.example.phong.g_market.model.User;
+import com.example.phong.g_market.myproduct.MyProductActivity;
 import com.example.phong.g_market.product.CategoryProductActivity;
 import com.example.phong.g_market.product.ViewProductActivity;
 import com.example.phong.g_market.profile.EditProfileActivity;
@@ -70,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageView imvMenu;
     private DrawerLayout drawerMenu;
 
-    RelativeLayout stubLogin, stubLogout;
+    RelativeLayout stubLogin, stubLogout,listMenu;
 
     LinearLayout btnLogout;
     RelativeLayout btnMenuCart, btnMenuShop, btnMenuInfo, btnMenuOrder;
@@ -113,10 +116,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         stubLogin = (RelativeLayout) findViewById(R.id.relLogin);
         stubLogout = (RelativeLayout) findViewById(R.id.relLogout);
+        listMenu = (RelativeLayout) findViewById(R.id.listMenu);
 
         dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_login);
+        getWindow().setLayout(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT);
 
         rcCategory = (RecyclerView) findViewById(R.id.rc_category);
         rcProduct = (RecyclerView) findViewById(R.id.rc_product);
@@ -149,21 +154,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnMenuCart.setOnClickListener(this);
         btnMenuShop.setOnClickListener(this);
         btnLogout.setOnClickListener(this);
-
+        tvRegister.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rel_cart:
+                Intent intent1 = new Intent(MainActivity.this, AddCartActivity.class);
+                startActivity(intent1);
                 break;
             case R.id.rel_my_shop:
+                Intent intent2 = new Intent(MainActivity.this, MyProductActivity.class);
+                startActivity(intent2);
                 break;
             case R.id.rel_order:
                 break;
             case R.id.rel_profile_info:
-                Intent intent = new Intent(MainActivity.this, EditProfileActivity.class);
-                startActivity(intent);
+                Intent intent3 = new Intent(MainActivity.this, EditProfileActivity.class);
+                startActivity(intent3);
                 break;
             case R.id.btn_logout:
                 FirebaseAuth.getInstance().signOut();
@@ -172,8 +181,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dialog.show();
                 break;
             case R.id.tv_register:
-                Intent intent1 = new Intent(MainActivity.this, RegisterActivity.class);
-                startActivity(intent1);
+                Intent intent4 = new Intent(MainActivity.this, RegisterActivity.class);
+                startActivity(intent4);
                 break;
         }
     }
@@ -339,6 +348,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             stubLogout.setVisibility(View.GONE);
             stubLogin.setVisibility(View.VISIBLE);
             btnLogout.setVisibility(View.GONE);
+            listMenu.setVisibility(View.GONE);
 
             tvLogin.setOnClickListener(this);
             tvRegister.setOnClickListener(this);
@@ -347,6 +357,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             stubLogout.setVisibility(View.VISIBLE);
             stubLogin.setVisibility(View.GONE);
             btnLogout.setVisibility(View.VISIBLE);
+            listMenu.setVisibility(View.VISIBLE);
             btnLogout.setOnClickListener(this);
         }
     }

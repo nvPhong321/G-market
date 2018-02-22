@@ -14,15 +14,15 @@
             android:layout_width="match_parent"
             android:layout_height="150dp">
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_marginBottom="50dp"
-                android:layout_alignParentBottom="true"
+                android:layout_marginTop="30dp"
+                android:layout_alignParentTop="true"
                 android:id="@+id/imv_profileImage"
                 android:src="@drawable/ic_avatar"
                 android:layout_width="50dp"
                 android:layout_height="50dp" />
             <TextView
                 android:background="@drawable/border_right"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="30dp"
                 android:layout_alignParentBottom="true"
                 android:paddingRight="10dp"
                 android:textColor="@android:color/white"
@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content" />
             <TextView
                 android:layout_marginLeft="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="30dp"
                 android:layout_alignParentBottom="true"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"

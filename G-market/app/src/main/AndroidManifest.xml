@@ -21,6 +21,8 @@
         <activity android:name=".cart.AddCartActivity"/>
         <activity android:name=".profile.EditProfileActivity"/>
         <activity android:name=".profile.RegisterActivity"/>
+        <activity android:name=".myproduct.AddProductActivity"/>
+        <activity android:name=".myproduct.MyProductActivity"/>
     </application>
 
 </manifest>
