@@ -1,26 +1,28 @@
 package com.example.phong.g_market.model;
 
-import android.graphics.Bitmap;
-
 /**
  * Created by phong on 2/2/2018.
  */
 
 public class Category {
 
-    private Bitmap images;
+    private String images;
     private String name;
 
-    public Category(Bitmap images, String name) {
+    public Category(){
+
+    }
+
+    public Category(String images, String name) {
         this.images = images;
         this.name = name;
     }
 
-    public Bitmap getImages() {
+    public String getImages() {
         return images;
     }
 
-    public void setImages(Bitmap images) {
+    public void setImages(String images) {
         this.images = images;
     }
 

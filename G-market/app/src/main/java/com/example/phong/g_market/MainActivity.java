@@ -2,8 +2,6 @@ package com.example.phong.g_market;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -43,8 +41,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -261,24 +263,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setupCategory() {
-        Bitmap clock = BitmapFactory.decodeResource(getResources(), R.drawable.clock);
-        Bitmap tivi = BitmapFactory.decodeResource(getResources(), R.drawable.tivi);
-        Bitmap smartphone = BitmapFactory.decodeResource(getResources(), R.drawable.smart_phone);
-        Bitmap camera = BitmapFactory.decodeResource(getResources(), R.drawable.camera);
-        Bitmap laptop = BitmapFactory.decodeResource(getResources(), R.drawable.laptop);
-        Bitmap headphone = BitmapFactory.decodeResource(getResources(), R.drawable.headphone);
 
+        DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference();
+        Query jqQuery = dbreference.child(getString(R.string.dbname_category));
+        jqQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (final DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Log.d(TAG, "onDataChange: found use:" + ds.getValue(Category.class).toString());
 
-        arrdata.add(new Category(clock, "Đồng hồ"));
-        arrdata.add(new Category(tivi, "Ti vi"));
-        arrdata.add(new Category(smartphone, "Điện thoại"));
-        arrdata.add(new Category(camera, "Máy ảnh"));
-        arrdata.add(new Category(laptop, "Laptop"));
-        arrdata.add(new Category(headphone, "Tai nghe"));
+                    arrdata.add(ds.getValue(Category.class));
 
-        adapterCateGory = new CategoryAdapter(arrdata);
-        adapterCateGory.notifyDataSetChanged();
-        rcCategory.setAdapter(adapterCateGory);
+                    adapterCateGory = new CategoryAdapter(arrdata,MainActivity.this);
+                    adapterCateGory.notifyDataSetChanged();
+                    rcCategory.setAdapter(adapterCateGory);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         rcCategory.addOnItemTouchListener(
                 new RecyclerItemClickListener(this, rcCategory, new RecyclerItemClickListener.OnItemClickListener() {
@@ -286,6 +293,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onItemClick(View view, int position) {
                         // do whatever
                         String data = arrdata.get(position).getName();
+                        Log.d(TAG,"Name category " + data);
                         Bundle bundle = new Bundle();
                         bundle.putString("data", data);
                         Intent intent = new Intent(MainActivity.this, CategoryProductActivity.class);
@@ -302,23 +310,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setupProduct() {
-        Bitmap clock = BitmapFactory.decodeResource(getResources(), R.drawable.clock);
-        Bitmap tivi = BitmapFactory.decodeResource(getResources(), R.drawable.tivi);
-        Bitmap smartphone = BitmapFactory.decodeResource(getResources(), R.drawable.smart_phone);
-        Bitmap camera = BitmapFactory.decodeResource(getResources(), R.drawable.camera);
-        Bitmap laptop = BitmapFactory.decodeResource(getResources(), R.drawable.laptop);
-        Bitmap headphone = BitmapFactory.decodeResource(getResources(), R.drawable.headphone);
 
-        arrdataProduct.add(new Product("Đồng hồ đeo tay abcxyz", "10.750.000 Đ", "ABC shop", clock));
-        arrdataProduct.add(new Product("Ti vi sony G9756", "14.500.000 Đ", "Nguyễn Kim", tivi));
-        arrdataProduct.add(new Product("Điện thoại Asus Zenfone 3 ZE012", "8.000.000 Đ", "Thế giới di động", smartphone));
-        arrdataProduct.add(new Product("Máy ảnh sony", "14.500.000 Đ", "Nguyễn Kim", camera));
-        arrdataProduct.add(new Product("Laptop Asus P550l", "15.500.000 Đ", "Nguyễn Kim", laptop));
-        arrdataProduct.add(new Product("Tai nghe sony N1", "4.990.000 Đ", "Nguyễn Kim", headphone));
-
-        adapterProduct = new ProductAdapter(arrdataProduct);
-        adapterProduct.notifyDataSetChanged();
-        rcProduct.setAdapter(adapterProduct);
+//        adapterProduct = new ProductAdapter(arrdataProduct);
+//        adapterProduct.notifyDataSetChanged();
+//        rcProduct.setAdapter(adapterProduct);
 
         rcProduct.addOnItemTouchListener(
                 new RecyclerItemClickListener(this, rcCategory, new RecyclerItemClickListener.OnItemClickListener() {

@@ -36,7 +36,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.Recycler
         holder.tvNames.setText(listData.get(position).getName());
         holder.tvCost.setText(listData.get(position).getCost());
         holder.tvShop.setText(listData.get(position).getShop());
-        holder.imvProduct.setImageBitmap(listData.get(position).getImages());
+        //holder.imvProduct.setImageBitmap(listData.get(position).getImages());
     }
     @Override
     public int getItemCount() {

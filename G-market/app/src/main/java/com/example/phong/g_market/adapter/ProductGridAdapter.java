@@ -61,7 +61,7 @@ public class ProductGridAdapter extends ArrayAdapter<Product> {
         viewHolder.tvName.setText(arr.get(position).getName());
         viewHolder.tvCost.setText(arr.get(position).getCost());
         viewHolder.tvShop.setText(arr.get(position).getShop());
-        viewHolder.imvProduct.setImageBitmap(arr.get(position).getImages());
+        //viewHolder.imvProduct.setImageBitmap(arr.get(position).getImages());
 
         return convertView;
     }
