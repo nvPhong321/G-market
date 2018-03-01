@@ -12,5 +12,5 @@ public class FilePaths {
     public String PICTURES = ROOT_DIR + "/Pictures";
     public String CAMERA = ROOT_DIR + "/DCIM";
 
-    public String FIREBASE_IMAGE_STORAGE = "photos/users/";
+    public String FIREBASE_IMAGE_STORAGE = "Product/Users/";
 }

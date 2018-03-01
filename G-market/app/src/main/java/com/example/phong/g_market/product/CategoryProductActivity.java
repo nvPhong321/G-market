@@ -1,8 +1,10 @@
 package com.example.phong.g_market.product;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,10 +18,20 @@ import com.example.phong.g_market.R;
 import com.example.phong.g_market.adapter.ProductAdapter;
 import com.example.phong.g_market.adapter.ProductGridAdapter;
 import com.example.phong.g_market.model.Product;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 public class CategoryProductActivity extends AppCompatActivity implements View.OnClickListener{
+
+    public static final String TAG = "Activity CategoryProductActivity";
 
     private ViewStub stubGrid,stubRecycler;
     private GridView gridView;
@@ -35,6 +47,11 @@ public class CategoryProductActivity extends AppCompatActivity implements View.O
     private ArrayList<Product> arrdataProduct;
 
     private String mCategory;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mRef;
 
 
 
@@ -63,7 +80,7 @@ public class CategoryProductActivity extends AppCompatActivity implements View.O
         try {
             mCategory = getCategory();
             Log.d("data" , mCategory);
-            //setupProduct();
+            setupProduct();
         } catch (NullPointerException e) {
 
         }
@@ -76,6 +93,7 @@ public class CategoryProductActivity extends AppCompatActivity implements View.O
         fabList.setOnClickListener(this);
         fabGrid.setOnClickListener(this);
 
+        setupFirebaseAuth();
     }
 
     @Override
@@ -115,7 +133,7 @@ public class CategoryProductActivity extends AppCompatActivity implements View.O
     private void setAdapter(){
 
         if(VIEW_MODE_RECYCLER == currentView) {
-            adapterProduct = new ProductAdapter(arrdataProduct);
+            adapterProduct = new ProductAdapter(arrdataProduct, CategoryProductActivity.this);
             adapterProduct.notifyDataSetChanged();
             rcProduct.setAdapter(adapterProduct);
         }else {
@@ -140,42 +158,77 @@ public class CategoryProductActivity extends AppCompatActivity implements View.O
     }
 
 
-//    private void setupProduct(){
-//        Bitmap clock = BitmapFactory.decodeResource(getResources(),R.drawable.clock);
-//        Bitmap tivi = BitmapFactory.decodeResource(getResources(),R.drawable.tivi);
-//        Bitmap smartphone = BitmapFactory.decodeResource(getResources(),R.drawable.smart_phone);
-//        Bitmap camera = BitmapFactory.decodeResource(getResources(),R.drawable.camera);
-//        Bitmap laptop = BitmapFactory.decodeResource(getResources(),R.drawable.laptop);
-//        Bitmap headphone = BitmapFactory.decodeResource(getResources(),R.drawable.headphone);
-//
-//        if (mCategory.equals("Đồng hồ")){
-//            arrdataProduct.clear();
-//            arrdataProduct.add(new Product("Đồng hồ đeo tay abcxyz", "10.750.000 Đ", "ABC shop",clock));
-//        }else if (mCategory.equals("Ti vi")){
-//
-//            arrdataProduct.clear();
-//            arrdataProduct.add(new Product("Ti vi sony G9756", "14.500.000 Đ", "Nguyễn Kim",tivi));
-//
-//        }else if(mCategory.equals("Điện thoại")){
-//
-//            arrdataProduct.clear();
-//            arrdataProduct.add(new Product("Điện thoại Asus Zenfone 3 ZE012", "8.000.000 Đ", "Thế giới di động",smartphone));
-//
-//        }else if(mCategory.equals("Máy ảnh")){
-//
-//            arrdataProduct.clear();
-//            arrdataProduct.add(new Product("Máy ảnh sony","14.500.000 Đ", "Nguyễn Kim",camera));
-//
-//        }else if(mCategory.equals("Laptop")){
-//
-//            arrdataProduct.clear();
-//            arrdataProduct.add(new Product("Laptop Asus P550l","15.500.000 Đ", "Nguyễn Kim",laptop));
-//
-//        }else if(mCategory.equals("Tai nghe")){
-//
-//            arrdataProduct.clear();
-//            arrdataProduct.add(new Product("Tai nghe sony N1","4.990.000 Đ", "Nguyễn Kim",headphone));
-//
-//        }
-//    }
+    private void setupProduct(){
+
+        DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference();
+        Query jqQuery = dbreference.child(getString(R.string.dbname_product))
+                .orderByChild(getString(R.string.field_product_category))
+                .equalTo(mCategory);
+        jqQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (final DataSnapshot ds : dataSnapshot.getChildren()) {
+                    arrdataProduct.add(ds.getValue(Product.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+    /* ------------------------- Fire Base ----------------------------*/
+
+    private void setupFirebaseAuth() {
+
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @SuppressLint("LongLogTag")
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                //check if the user is logged in
+
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+                // ...
+            }
+        };
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        // TODO Auto-generated method stub
+        super.onBackPressed();
+        finish();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
+    }
 }

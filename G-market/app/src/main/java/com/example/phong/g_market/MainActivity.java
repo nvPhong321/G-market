@@ -29,7 +29,6 @@ import com.example.phong.g_market.adapter.ProductAdapter;
 import com.example.phong.g_market.cart.AddCartActivity;
 import com.example.phong.g_market.model.Category;
 import com.example.phong.g_market.model.Product;
-import com.example.phong.g_market.model.User;
 import com.example.phong.g_market.myproduct.MyProductActivity;
 import com.example.phong.g_market.product.CategoryProductActivity;
 import com.example.phong.g_market.product.ViewProductActivity;
@@ -86,8 +85,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mRef;
-
-    private User mUser;
 
 
     @Override
@@ -311,20 +308,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setupProduct() {
 
-//        adapterProduct = new ProductAdapter(arrdataProduct);
-//        adapterProduct.notifyDataSetChanged();
-//        rcProduct.setAdapter(adapterProduct);
+        DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference();
+        Query jqQuery = dbreference.child(getString(R.string.dbname_product));
+        jqQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (final DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Log.d(TAG, "onDataChange: found use:" + ds.getValue(Category.class).toString());
+
+                    arrdataProduct.add(ds.getValue(Product.class));
+
+                    adapterProduct = new ProductAdapter(arrdataProduct,MainActivity.this);
+                    adapterProduct.notifyDataSetChanged();
+                    rcProduct.setAdapter(adapterProduct);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         rcProduct.addOnItemTouchListener(
                 new RecyclerItemClickListener(this, rcCategory, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
                         // do whatever
-//                        String data = arrdataProduct.get(position).getName();
-//                        Bundle bundle = new Bundle();
-//                        bundle.putString("data",data);
+                        String data = arrdataProduct.get(position).getName();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("data",data);
                         Intent intent = new Intent(MainActivity.this, ViewProductActivity.class);
-//                        intent.putExtra("bundle",bundle);
+                        intent.putExtra("bundle",bundle);
                         startActivity(intent);
                     }
 

@@ -1,7 +1,6 @@
 package com.example.phong.g_market.ultil;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -64,15 +63,11 @@ public class FirebaseMethod {
         return count;
     }
 
-    public void uploadFile(int count, final String nameProduct,final String cost,final int amount,final String category,final String shop, final Uri imgUrl, Bitmap bm) {
+    public void uploadFile(int count, final String nameProduct,final String cost,final int amount,final String category,final String shop, final Uri imgUrl) {
         FilePaths filePaths = new FilePaths();
         String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
         StorageReference storageReference = mStorageReference
                 .child(filePaths.FIREBASE_IMAGE_STORAGE + "/" + user_id + "/photo" +  (count + 1));
-//        if(bm == null) {
-//            bm = ImageManager.getBitMap(imgUrl);
-//        }
-//        byte [] bytes = ImageManager.getByteFromBitMap(bm,100);
         UploadTask uploadTask = null;
         uploadTask  = storageReference.putFile(imgUrl);
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {

@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -33,16 +35,19 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
-public class AddProductActivity extends AppCompatActivity {
+public class AddProductActivity extends AppCompatActivity implements View.OnClickListener{
 
     public static final String TAG = "Activity Add Product";
 
     ImageView imvBack,imvChooseImage,imvShowImage;
     EditText edtNameProduct,edtCost,edtShop;
     Spinner spnCategory;
-    TextView tvAmount;
+    TextView tvAmount,tvCost;
     Button btnMinus,btnPlus,btnComplete;
 
     private FirebaseAuth mAuth;
@@ -52,17 +57,17 @@ public class AddProductActivity extends AppCompatActivity {
     private FirebaseMethod mFirebaseMethods;
 
     private static final int VERIFY_PERMISSION_REQUEST = 1;
-    private String mAppend = "file:/";
-    private Bitmap bmp;
     private int imageCount = 0;
-    private Intent intent;
 
-    private String name,cost,shop,spinner;
+    private String name,cost,shop;
     private int amount;
     private Uri imageUri;
 
     ArrayList<String> directoriesName;
     ArrayAdapter arrayAdapter;
+
+    int kq = 0;
+    int number = 1;
 
     private static final int RESULT_LOAD_IMG = 5;
 
@@ -70,6 +75,8 @@ public class AddProductActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_product);
+
+        setupFirebaseAuth();
 
         mFirebaseMethods = new FirebaseMethod(AddProductActivity.this);
 
@@ -92,14 +99,15 @@ public class AddProductActivity extends AppCompatActivity {
         spnCategory = (Spinner) findViewById(R.id.spncategoryAddProduct);
 
         tvAmount = (TextView) findViewById(R.id.tv_amount);
+        tvCost = (TextView) findViewById(R.id.tv_numberCost);
 
         btnPlus = (Button) findViewById(R.id.btn_plus_add_shop);
-        btnMinus = (Button) findViewById(R.id.btn_plus_add_shop);
+        btnMinus = (Button) findViewById(R.id.btn_minus_add_shop);
         btnComplete = (Button) findViewById(R.id.btnComplete);
 
+        edtCost.addTextChangedListener(onTextChangedListener());
         getCategory();
         Button();
-        setupFirebaseAuth();
 
     }
 
@@ -126,6 +134,27 @@ public class AddProductActivity extends AppCompatActivity {
                 setInfoProduct();
             }
         });
+
+        btnMinus.setOnClickListener(this);
+        btnPlus.setOnClickListener(this);
+
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        String s = tvAmount.getText().toString();
+
+        switch (view.getId()){
+            case R.id.btn_minus_add_shop:
+                kq = Integer.parseInt(s) - number;
+                tvAmount.setText(String.valueOf(kq));
+                break;
+            case R.id.btn_plus_add_shop:
+                kq = Integer.parseInt(s) + number;
+                tvAmount.setText(String.valueOf(kq));
+                break;
+        }
     }
 
     @Override
@@ -174,14 +203,55 @@ public class AddProductActivity extends AppCompatActivity {
 
     private void setInfoProduct(){
         name = edtNameProduct.getText().toString();
-        cost = edtCost.getText().toString();
+        cost = edtCost.getText().toString() + tvCost.getText().toString();
         shop = edtShop.getText().toString();
-        String a = tvAmount.getText().toString();
+        String a = String.valueOf(kq);
         amount = Integer.parseInt(a);
 
         String text = spnCategory.getSelectedItem().toString();
 
-        mFirebaseMethods.uploadFile(imageCount,name,cost,amount,text,shop,imageUri,null);
+        mFirebaseMethods.uploadFile(imageCount,name,cost,amount,text,shop,imageUri);
+    }
+
+    private TextWatcher onTextChangedListener() {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                edtCost.removeTextChangedListener(this);
+
+                try {
+                    String originalString = s.toString();
+
+                    Long longval;
+                    if (originalString.contains(",")) {
+                        originalString = originalString.replaceAll(",", "");
+                    }
+                    longval = Long.parseLong(originalString);
+
+                    DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+                    formatter.applyPattern("#,###,###,###");
+                    String formattedString = formatter.format(longval);
+
+                    //setting text after format to EditText
+                    edtCost.setText(formattedString);
+                    edtCost.setSelection(edtCost.getText().length());
+                } catch (NumberFormatException nfe) {
+                    nfe.printStackTrace();
+                }
+
+                edtCost.addTextChangedListener(this);
+            }
+        };
     }
 
     private void verifyPermissions(String[] permissions) {
@@ -215,6 +285,8 @@ public class AddProductActivity extends AppCompatActivity {
     private void setupFirebaseAuth() {
 
         mAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mRef = mFirebaseDatabase.getReference();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -222,6 +294,7 @@ public class AddProductActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
 
                 //check if the user is logged in
+
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
@@ -232,6 +305,17 @@ public class AddProductActivity extends AppCompatActivity {
                 // ...
             }
         };
+
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                imageCount = mFirebaseMethods.getImageCount(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
 

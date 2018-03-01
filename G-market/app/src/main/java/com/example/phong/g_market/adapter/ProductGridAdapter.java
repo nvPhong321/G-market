@@ -10,8 +10,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.phong.g_market.R;
+import com.example.phong.g_market.model.Category;
 import com.example.phong.g_market.model.Product;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -58,10 +66,27 @@ public class ProductGridAdapter extends ArrayAdapter<Product> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.tvName.setText(arr.get(position).getName());
-        viewHolder.tvCost.setText(arr.get(position).getCost());
-        viewHolder.tvShop.setText(arr.get(position).getShop());
-        //viewHolder.imvProduct.setImageBitmap(arr.get(position).getImages());
+        DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference();
+        Query jqQuery = dbreference.child(mActivity.getString(R.string.dbname_product))
+                .orderByChild(mActivity.getString(R.string.field_product_id))
+                .equalTo(arr.get(position).getProductId());
+        jqQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (final DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                    viewHolder.tvName.setText(ds.getValue(Product.class).getName());
+                    viewHolder.tvCost.setText(ds.getValue(Product.class).getCost());
+                    viewHolder.tvShop.setText(ds.getValue(Product.class).getShop());
+                    Glide.with(mActivity).load(ds.getValue(Category.class).getImages()).into(viewHolder.imvProduct);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         return convertView;
     }

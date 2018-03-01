@@ -54,7 +54,7 @@
                 android:paddingRight="10dp">
 
                 <TextView
-                    android:id="@+id/tv_view_product_name"
+                    android:id="@+id/tv_view_cart_product_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Đồng hồ akjshjsjkhsdjkhsdkjhdsjkhskhsdks"
@@ -63,7 +63,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:layout_below="@+id/tv_view_product_name"
+                    android:layout_below="@+id/tv_view_cart_product_name"
                     android:id="@+id/txt_dongia"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -74,11 +74,11 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tv_view_product_cost"
+                    android:id="@+id/tv_view_cart_product_cost"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/txt_dongia"
-                    android:layout_below="@id/tv_view_product_name"
+                    android:layout_below="@id/tv_view_cart_product_name"
                     android:text="175.000.000"
                     android:textColor="@android:color/holo_red_dark"
                     android:textSize="20sp"
@@ -100,7 +100,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/tv_view_product_shop"
+                        android:id="@+id/tv_view_cart_product_shop"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
@@ -147,7 +147,7 @@
                     android:background="@drawable/ic_minus" />
 
                 <TextView
-                    android:id="@+id/tv_amount"
+                    android:id="@+id/tv_amount_cart"
                     android:layout_width="60dp"
                     android:layout_height="30dp"
                     android:layout_centerVertical="true"
@@ -158,11 +158,12 @@
                     android:text="1" />
 
                 <Button
+                    android:id="@+id/btn_plus_add_cart"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@+id/tv_amount"
+                    android:layout_toRightOf="@+id/tv_amount_cart"
                     android:background="@drawable/ic_add" />
             </RelativeLayout>
 
@@ -195,7 +196,7 @@
                     android:textStyle="bold"
                     android:textSize="20sp"
                     android:textColor="@android:color/holo_red_dark"
-                    android:id="@+id/tv_cost"
+                    android:id="@+id/tv_summary_cost_cart"
                     android:layout_width="60dp"
                     android:layout_height="30dp"
                     android:layout_centerVertical="true"
@@ -218,7 +219,8 @@
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp">
 
-            <android.support.v7.widget.AppCompatButton
+            <Button
+                android:id="@+id/btnNext"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@android:color/holo_red_dark"
