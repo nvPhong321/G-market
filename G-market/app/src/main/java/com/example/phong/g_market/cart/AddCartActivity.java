@@ -23,6 +23,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class AddCartActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String TAG = "Activity AddCart";
@@ -34,8 +38,8 @@ public class AddCartActivity extends AppCompatActivity implements View.OnClickLi
     String mViewProduct;
     int kq = 0;
     int number = 1;
-    int summaryCost = 0;
-    String summary;
+    int summaryCost;
+    String numberA,numberB;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -96,15 +100,24 @@ public class AddCartActivity extends AppCompatActivity implements View.OnClickLi
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (final DataSnapshot ds : dataSnapshot.getChildren()) {
 
-                    tvCost.setText(ds.getValue(Product.class).getCost());
                     tvName.setText(ds.getValue(Product.class).getName());
                     tvShop.setText(ds.getValue(Product.class).getShop());
 
-                    Log.d(TAG,"Ammount " + kq);
-
-                    if(kq > ds.getValue(Product.class).getNumber()){
-                        btnPlus.setEnabled(false);
+                    String originalString = ds.getValue(Product.class).getCost().toString();
+                    Long longval;
+                    if (originalString.contains(",")) {
+                        originalString = originalString.replaceAll(",", "");
                     }
+                    longval = Long.parseLong(originalString);
+
+                    DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+                    formatter.applyPattern("#,###,###,###");
+                    String formattedString = formatter.format(longval);
+
+                    //setting text after format to EditText
+                    tvCost.setText(formattedString);
+
+                    numberA = ds.getValue(Product.class).getCost();
                 }
             }
 
@@ -130,8 +143,10 @@ public class AddCartActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
 
-        String s = tvAmount.getText().toString();
-        summary = tvCost.getText().toString();
+        final String s = tvAmount.getText().toString();
+
+        Log.d(TAG,"number b " + numberB);
+        Log.d(TAG,"number a " + numberA);
 
         switch (view.getId()){
             case R.id.btn_minus_add_cart:
@@ -160,6 +175,22 @@ public class AddCartActivity extends AppCompatActivity implements View.OnClickLi
 
                     }
                 });
+
+                summaryCost = summaryCost - Integer.parseInt(numberA);
+                String originalString1 = String.valueOf(summaryCost);
+                Long longval1;
+                if (originalString1.contains(",")) {
+                    originalString1 = originalString1.replaceAll(",", "");
+                }
+                longval1 = Long.parseLong(originalString1);
+
+                DecimalFormat formatter1 = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+                formatter1.applyPattern("#,###,###,###");
+                String formattedString1 = formatter1.format(longval1);
+
+                //setting text after format to EditText
+                tvSummary.setText( String.valueOf(formattedString1));
+
                 break;
             case R.id.btn_plus_add_cart:
 
@@ -174,7 +205,6 @@ public class AddCartActivity extends AppCompatActivity implements View.OnClickLi
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (final DataSnapshot ds : dataSnapshot.getChildren()) {
-                            Log.d(TAG,"Ammount " + kq);
 
                             if(kq == ds.getValue(Product.class).getNumber()){
                                 btnPlus.setEnabled(false);
@@ -187,6 +217,23 @@ public class AddCartActivity extends AppCompatActivity implements View.OnClickLi
 
                     }
                 });
+
+                summaryCost = summaryCost + Integer.parseInt(numberA);
+
+                String originalString = String.valueOf(summaryCost);
+                Long longval;
+                if (originalString.contains(",")) {
+                    originalString = originalString.replaceAll(",", "");
+                }
+                longval = Long.parseLong(originalString);
+
+                DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+                formatter.applyPattern("#,###,###,###");
+                String formattedString = formatter.format(longval);
+
+                //setting text after format to EditText
+                tvSummary.setText( String.valueOf(formattedString));
+
                 break;
         }
     }

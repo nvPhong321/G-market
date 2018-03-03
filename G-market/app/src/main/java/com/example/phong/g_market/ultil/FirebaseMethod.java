@@ -94,11 +94,12 @@ public class FirebaseMethod {
 
     public void addPhotoToDatabase(String nameproduct, String cost, String shop, int amount, String categories, String imgUrl){
 
-        String tag = StringManupulation.getTags(nameproduct);
+        String name = StringManupulation.getTags(nameproduct);
+        String costs = StringManupulation.expandCost(cost);
         String newPhotoKey = mRef.child(mContext.getString(R.string.dbname_product)).push().getKey();
         Product product = new Product();
-        product.setCost(cost);
-        product.setName(tag);
+        product.setCost(costs);
+        product.setName(name);
         product.setCategories(categories);
         product.setNumber(amount);
         product.setShop(shop);

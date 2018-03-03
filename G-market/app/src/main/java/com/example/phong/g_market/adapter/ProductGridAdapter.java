@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.phong.g_market.R;
-import com.example.phong.g_market.model.Category;
 import com.example.phong.g_market.model.Product;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -21,7 +20,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by phong on 2/3/2018.
@@ -76,9 +78,22 @@ public class ProductGridAdapter extends ArrayAdapter<Product> {
                 for (final DataSnapshot ds : dataSnapshot.getChildren()) {
 
                     viewHolder.tvName.setText(ds.getValue(Product.class).getName());
-                    viewHolder.tvCost.setText(ds.getValue(Product.class).getCost());
                     viewHolder.tvShop.setText(ds.getValue(Product.class).getShop());
-                    Glide.with(mActivity).load(ds.getValue(Category.class).getImages()).into(viewHolder.imvProduct);
+                    Glide.with(mActivity).load(ds.getValue(Product.class).getImages()).into(viewHolder.imvProduct);
+
+                    String originalString = ds.getValue(Product.class).getCost().toString();
+                    Long longval;
+                    if (originalString.contains(",")) {
+                        originalString = originalString.replaceAll(",", "");
+                    }
+                    longval = Long.parseLong(originalString);
+
+                    DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+                    formatter.applyPattern("#,###,###,###");
+                    String formattedString = formatter.format(longval);
+
+                    //setting text after format to EditText
+                    viewHolder.tvCost.setText(formattedString);
                 }
             }
 

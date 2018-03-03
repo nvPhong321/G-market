@@ -7,7 +7,9 @@
 
     <string name="field_name_category">name</string>
     <string name="field_username">username</string>
+
     <string name="field_product_id">productId</string>
     <string name="field_product_category">categories</string>
     <string name="field_product_name">name</string>
+    <string name="field_user_id">name</string>
 </resources>

@@ -27,19 +27,19 @@ import java.util.Locale;
  * Created by phong on 2/2/2018.
  */
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.RecyclerViewHolder> {
+public class MyProductAdapter extends RecyclerView.Adapter<MyProductAdapter.RecyclerViewHolder> {
 
     private ArrayList<Product> listData = new ArrayList<>();
     private Activity mContext;
 
-    public ProductAdapter(ArrayList<Product> arrdata, Activity context) {
+    public MyProductAdapter(ArrayList<Product> arrdata, Activity context) {
         this.listData = arrdata;
         this.mContext = context;
     }
     @Override
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View itemview = inflater.inflate(R.layout.item_recycler_product, parent, false);
+        View itemview = inflater.inflate(R.layout.item_recycler_my_product, parent, false);
         return new RecyclerViewHolder(itemview);
     }
 
@@ -57,6 +57,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.Recycler
 
                     holder.tvNames.setText(ds.getValue(Product.class).getName());
                     holder.tvShop.setText(ds.getValue(Product.class).getShop());
+                    holder.tvAmmount.setText(String.valueOf(ds.getValue(Product.class).getNumber()));
+                    holder.tvCategories.setText(ds.getValue(Product.class).getCategories());
                     Glide.with(mContext).load(ds.getValue(Product.class).getImages()).into(holder.imvProduct);
 
                     String originalString = ds.getValue(Product.class).getCost().toString();
@@ -92,15 +94,17 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.Recycler
         return listData.size();
     }
     public class RecyclerViewHolder extends RecyclerView.ViewHolder {
-        TextView tvNames,tvCost,tvShop;
+        TextView tvNames,tvCost,tvShop,tvAmmount,tvCategories;
         ImageView imvProduct;
 
         public RecyclerViewHolder(View itemView) {
             super(itemView);
-            tvNames = (TextView) itemView.findViewById(R.id.tv_product_name);
-            tvCost = (TextView) itemView.findViewById(R.id.tv_product_cost);
-            tvShop = (TextView) itemView.findViewById(R.id.tv_product_shop);
-            imvProduct = (ImageView) itemView.findViewById(R.id.imv_product);
+            tvNames = (TextView) itemView.findViewById(R.id.tv_my_product_name);
+            tvCost = (TextView) itemView.findViewById(R.id.tv_my_product_cost);
+            tvShop = (TextView) itemView.findViewById(R.id.tv_my_product_shop);
+            tvAmmount = (TextView) itemView.findViewById(R.id.tv_amount_myProduct);
+            tvCategories = (TextView) itemView.findViewById(R.id.tv_my_product_categories);
+            imvProduct = (ImageView) itemView.findViewById(R.id.imv_my_product);
         }
 
     }

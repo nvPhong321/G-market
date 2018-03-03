@@ -83,6 +83,15 @@
                     android:textColor="@android:color/holo_red_dark"
                     android:textSize="20sp"
                     android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/tv_view_cart_product_cost"
+                    android:layout_below="@id/tv_view_cart_product_name"
+                    android:text=" đ"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -155,7 +164,7 @@
                     android:layout_toRightOf="@+id/btn_minus_add_cart"
                     android:background="@drawable/gray_border"
                     android:gravity="center"
-                    android:text="1" />
+                    android:text="0" />
 
                 <Button
                     android:id="@+id/btn_plus_add_cart"
@@ -193,17 +202,25 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:textStyle="bold"
-                    android:textSize="20sp"
-                    android:textColor="@android:color/holo_red_dark"
                     android:id="@+id/tv_summary_cost_cart"
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@+id/txt_cost"
-                    android:gravity="center"
-                    android:text="1" />
+                    android:layout_marginStart="12dp"
+                    android:layout_toEndOf="@+id/txt_cost"
+                    android:text="0"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/tv_summary_cost_cart"
+                    android:text=" đ"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
             </RelativeLayout>
 

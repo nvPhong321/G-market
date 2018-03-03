@@ -27,7 +27,7 @@
 
                 <ImageView
                     android:scaleType="centerInside"
-                    android:id="@+id/imv_product"
+                    android:id="@+id/imv_my_product"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/border"
@@ -49,7 +49,7 @@
                         android:layout_height="match_parent">
 
                         <TextView
-                            android:id="@+id/tv_product_name"
+                            android:id="@+id/tv_my_product_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="điện thoại"
@@ -60,11 +60,11 @@
 
                         <TextView
                             android:textSize="12sp"
-                            android:id="@+id/tv_product_cost"
+                            android:id="@+id/tv_my_product_cost"
                             android:textStyle="bold"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/tv_product_name"
+                            android:layout_below="@+id/tv_my_product_name"
                             android:text="1.750.000"
                             android:textColor="@android:color/holo_red_dark" />
                         <TextView
@@ -72,9 +72,30 @@
                             android:textStyle="bold"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/tv_product_name"
-                            android:layout_toRightOf="@id/tv_product_cost"
+                            android:layout_below="@+id/tv_my_product_name"
+                            android:layout_toRightOf="@id/tv_my_product_cost"
                             android:text=" đ"
+                            android:textColor="@android:color/holo_red_dark" />
+
+                        <TextView
+                            android:id="@+id/tv_amount_myProduct"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tv_my_product_name"
+                            android:layout_alignParentRight="true"
+                            android:text="15"
+                            android:textColor="@android:color/holo_red_dark" />
+
+                        <TextView
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tv_my_product_name"
+                            android:layout_toLeftOf="@id/tv_amount_myProduct"
+                            android:text="Số lượng "
                             android:textColor="@android:color/holo_red_dark" />
                     </RelativeLayout>
                 </LinearLayout>
@@ -84,25 +105,41 @@
                     android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="0dp">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:id="@+id/tv_shop"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:background="@drawable/gray_border"
+                            android:text="Shop"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_gravity="bottom"
-                        android:background="@drawable/gray_border"
-                        android:text="Shop"
-                        android:textSize="10sp"
-                        android:textStyle="bold" />
-                    <TextView
-                        android:textSize="10sp"
-                        android:id="@+id/tv_product_shop"
-                        android:layout_marginLeft="5dp"
-                        android:layout_gravity="bottom"
-                        android:text="Shop abc"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        <TextView
+                            android:id="@+id/tv_my_product_shop"
+                            android:layout_toRightOf="@+id/tv_shop"
+                            android:layout_alignParentBottom="true"
+                            android:textSize="10sp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:text="Shop abc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:id="@+id/tv_my_product_categories"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginBottom="5dp"
+                            android:text=""
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </RelativeLayout>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

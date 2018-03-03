@@ -137,8 +137,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginLeft="10dp"
-                            android:layout_toLeftOf="@id/tv_numberCost"
                             android:layout_toRightOf="@+id/tv_gia"
+                            android:layout_toLeftOf="@id/tv_numberCost"
                             android:background="@android:color/transparent"
                             android:ellipsize="end"
                             android:gravity="right|center_vertical"
@@ -150,10 +150,19 @@
                             android:id="@+id/tv_numberCost"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_alignBaseline="@+id/edtAddCostProduct"
+                            android:layout_alignBottom="@+id/edtAddCostProduct"
+                            android:layout_toLeftOf="@+id/vnd"
+                            android:text=",000"
+                            android:textSize="15sp" />
+                        <TextView
+                            android:id="@+id/vnd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBaseline="@+id/edtAddCostProduct"
+                            android:layout_alignBottom="@+id/edtAddCostProduct"
                             android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginRight="5dp"
-                            android:text=",000đ"
+                            android:text=" đ"
                             android:textSize="15sp" />
 
                     </RelativeLayout>

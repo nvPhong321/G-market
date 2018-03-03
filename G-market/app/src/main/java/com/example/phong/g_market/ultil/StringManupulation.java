@@ -5,8 +5,8 @@ package com.example.phong.g_market.ultil;
  */
 
 public class StringManupulation {
-    public static String expandUsername(String username){
-        return username.replace("."," ");
+    public static String expandCost(String cost){
+        return cost.replace(",","");
     }
     public static String condenseUsername(String username){
         return username.replace(" ",".");

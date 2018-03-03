@@ -24,6 +24,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class ViewProductActivity extends AppCompatActivity {
 
     public static final String TAG = "Activity ViewProduct";
@@ -108,10 +112,23 @@ public class ViewProductActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (final DataSnapshot ds : dataSnapshot.getChildren()) {
 
-                    tvCostProduct.setText(ds.getValue(Product.class).getCost());
                     tvNameProduct.setText(ds.getValue(Product.class).getName());
                     tvShopProduct.setText(ds.getValue(Product.class).getShop());
                     Glide.with(ViewProductActivity.this).load(ds.getValue(Product.class).getImages()).into(imvReview);
+
+                    String originalString = ds.getValue(Product.class).getCost().toString();
+                    Long longval;
+                    if (originalString.contains(",")) {
+                        originalString = originalString.replaceAll(",", "");
+                    }
+                    longval = Long.parseLong(originalString);
+
+                    DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+                    formatter.applyPattern("#,###,###,###");
+                    String formattedString = formatter.format(longval);
+
+                    //setting text after format to EditText
+                    tvCostProduct.setText(formattedString);
                 }
             }
 
