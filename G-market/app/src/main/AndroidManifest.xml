@@ -23,6 +23,7 @@
         <activity android:name=".profile.RegisterActivity"/>
         <activity android:name=".myproduct.AddProductActivity"/>
         <activity android:name=".myproduct.MyProductActivity"/>
+        <activity android:name=".cart.MyCartActivity"/>
     </application>
 
 </manifest>

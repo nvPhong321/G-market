@@ -4,6 +4,7 @@
     <string name="dbname_category">db_category</string>
     <string name="dbname_my_product">db_my_product</string>
     <string name="dbname_product">db_product</string>
+    <string name="dbname_my_cart">db_my_cart</string>
 
     <string name="field_name_category">name</string>
     <string name="field_username">username</string>
@@ -12,4 +13,10 @@
     <string name="field_product_category">categories</string>
     <string name="field_product_name">name</string>
     <string name="field_user_id">name</string>
+    <string name="field_product_cost">cost</string>
+    <string name="field_product_ammount">ammount</string>
+    <string name="field_product_images">imagesProduct</string>
+    <string name="field_product_name_cart">nameProduct</string>
+    <string name="field_cart_summary">summary</string>
+    <string name="field_cart_id">cartId</string>
 </resources>

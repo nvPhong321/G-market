@@ -26,7 +26,7 @@ import android.widget.Toast;
 import com.example.phong.g_market.adapter.BannerAdapter;
 import com.example.phong.g_market.adapter.CategoryAdapter;
 import com.example.phong.g_market.adapter.ProductAdapter;
-import com.example.phong.g_market.cart.AddCartActivity;
+import com.example.phong.g_market.cart.MyCartActivity;
 import com.example.phong.g_market.model.Category;
 import com.example.phong.g_market.model.Product;
 import com.example.phong.g_market.myproduct.MyProductActivity;
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rel_cart:
-                Intent intent1 = new Intent(MainActivity.this, AddCartActivity.class);
+                Intent intent1 = new Intent(MainActivity.this, MyCartActivity.class);
                 startActivity(intent1);
                 break;
             case R.id.rel_my_shop:

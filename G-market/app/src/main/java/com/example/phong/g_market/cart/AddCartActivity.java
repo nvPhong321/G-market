@@ -12,8 +12,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.phong.g_market.R;
+import com.example.phong.g_market.model.Cart;
 import com.example.phong.g_market.model.Product;
 import com.example.phong.g_market.ultil.FirebaseMethod;
+import com.example.phong.g_market.ultil.StringManupulation;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -40,6 +42,8 @@ public class AddCartActivity extends AppCompatActivity implements View.OnClickLi
     int number = 1;
     int summaryCost;
     String numberA,numberB;
+    private String name,cost,summary,ammount,productId,images;
+    private Cart cart;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -51,6 +55,8 @@ public class AddCartActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_cart);
+
+        cart = new Cart();
 
         imvBack = (ImageView) findViewById(R.id.imvBack);
 
@@ -72,8 +78,8 @@ public class AddCartActivity extends AppCompatActivity implements View.OnClickLi
 
         }
 
-        Button();
         setupFirebaseAuth();
+        Button();
     }
 
     private String getViewProduct() {
@@ -103,6 +109,9 @@ public class AddCartActivity extends AppCompatActivity implements View.OnClickLi
                     tvName.setText(ds.getValue(Product.class).getName());
                     tvShop.setText(ds.getValue(Product.class).getShop());
 
+                    productId = ds.getValue(Product.class).getProductId();
+                    images = ds.getValue(Product.class).getImages();
+
                     String originalString = ds.getValue(Product.class).getCost().toString();
                     Long longval;
                     if (originalString.contains(",")) {
@@ -119,6 +128,7 @@ public class AddCartActivity extends AppCompatActivity implements View.OnClickLi
 
                     numberA = ds.getValue(Product.class).getCost();
                 }
+
             }
 
             @Override
@@ -138,6 +148,42 @@ public class AddCartActivity extends AppCompatActivity implements View.OnClickLi
 
         btnMinus.setOnClickListener(this);
         btnPlus.setOnClickListener(this);
+
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addMyCart();
+                Intent intent = new Intent(AddCartActivity.this,MyCartActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void addMyCart(){
+        mAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mRef = mFirebaseDatabase.getReference();
+        name = tvName.getText().toString();
+        cost = tvCost.getText().toString();
+        ammount = tvAmount.getText().toString();
+        summary = tvSummary.getText().toString();
+
+        String costs = StringManupulation.expandCost(cost);
+        String summarys = StringManupulation.expandCost(summary);
+        String newPhotoKey = mRef.child(getString(R.string.dbname_my_cart)).push().getKey();
+
+        cart.setCartId(newPhotoKey);
+        cart.setProductId(productId);
+        cart.setImagesProduct(images);
+        cart.setNameProduct(name);
+        cart.setCost(costs);
+        cart.setAmmount(ammount);
+        cart.setSummary(summarys);
+
+        mRef.child(getString(R.string.dbname_my_cart))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(newPhotoKey)
+                .setValue(cart);
     }
 
     @Override
