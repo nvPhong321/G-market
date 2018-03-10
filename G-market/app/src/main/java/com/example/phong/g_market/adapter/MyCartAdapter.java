@@ -1,6 +1,7 @@
 package com.example.phong.g_market.adapter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.phong.g_market.R;
 import com.example.phong.g_market.model.Cart;
+import com.example.phong.g_market.ultil.StringManupulation;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,11 +22,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.paypal.android.sdk.payments.PayPalPayment;
+import com.paypal.android.sdk.payments.PayPalService;
+import com.paypal.android.sdk.payments.PaymentActivity;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
+
+import static com.example.phong.g_market.cart.MyCartActivity.PAYPAL_REQUEST_CODE;
+import static com.example.phong.g_market.cart.MyCartActivity.pay;
 
 /**
  * Created by phong on 2/2/2018.
@@ -47,11 +56,13 @@ public class MyCartAdapter extends RecyclerView.Adapter<MyCartAdapter.RecyclerVi
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerViewHolder holder, final int position) {
 
         DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference();
         Query jqQuery = dbreference.child(mContext.getString(R.string.dbname_my_cart))
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .orderByChild(mContext.getString(R.string.field_cart_id))
+                .equalTo(getItem(position).getCartId());
         jqQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -88,7 +99,6 @@ public class MyCartAdapter extends RecyclerView.Adapter<MyCartAdapter.RecyclerVi
 
                     holder.tvSummary.setText(formattedString1);
 
-
                 }
             }
 
@@ -97,8 +107,41 @@ public class MyCartAdapter extends RecyclerView.Adapter<MyCartAdapter.RecyclerVi
 
             }
         });
+
+        holder.chkCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(holder.chkCheck.isChecked()){
+                    getItem(position).setCheck(true);
+                }else {
+                    getItem(position).setCheck(false);
+                }
+            }
+        });
+
+
+        holder.btnPay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(holder.btnPay.isClickable()){
+                    getItem(position).setCheckClick(true);
+                    String cost = holder.tvSummary.getText().toString();
+                    String data = StringManupulation.expandCost(cost);
+                    total = Integer.parseInt(data) / 22000;
+                    PayPalPayment palPayment = new PayPalPayment(new BigDecimal(total),"USD","Total",PayPalPayment.PAYMENT_INTENT_SALE);
+                    Intent intent = new Intent(mContext, PaymentActivity.class);
+                    intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,pay);
+                    intent.putExtra(PaymentActivity.EXTRA_PAYMENT,palPayment);
+                    mContext.startActivityForResult(intent,PAYPAL_REQUEST_CODE);
+                }else {
+                    getItem(position).setCheckClick(false);
+                }
+            }
+        });
     }
 
+    public static int total;
 
     public Cart getItem(int position) {
         return listData.get(position);
@@ -108,11 +151,13 @@ public class MyCartAdapter extends RecyclerView.Adapter<MyCartAdapter.RecyclerVi
     public int getItemCount() {
         return listData.size();
     }
+
     public class RecyclerViewHolder extends RecyclerView.ViewHolder {
         TextView tvNames,tvCost,tvSummary,tvAmmount;
         CheckBox chkCheck;
         Button btnPay;
         ImageView imvProduct;
+        String name;
 
         public RecyclerViewHolder(View itemView) {
             super(itemView);

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.phong.g_market">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,14 +18,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".product.CategoryProductActivity"/>
-        <activity android:name=".product.ViewProductActivity"/>
-        <activity android:name=".cart.AddCartActivity"/>
-        <activity android:name=".profile.EditProfileActivity"/>
-        <activity android:name=".profile.RegisterActivity"/>
-        <activity android:name=".myproduct.AddProductActivity"/>
-        <activity android:name=".myproduct.MyProductActivity"/>
-        <activity android:name=".cart.MyCartActivity"/>
+        <activity android:name=".profile.LoginActivity"/>
+        <activity android:name=".product.CategoryProductActivity" />
+        <activity android:name=".product.ViewProductActivity" />
+        <activity android:name=".cart.AddCartActivity" />
+        <activity android:name=".profile.EditProfileActivity" />
+        <activity android:name=".profile.RegisterActivity" />
+        <activity android:name=".myproduct.AddProductActivity" />
+        <activity android:name=".myproduct.MyProductActivity" />
+        <activity android:name=".cart.MyCartActivity" />
+        <activity
+            android:name=".PaymentDetailActivity"
+            android:label="@string/title_activity_payment_detail"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

@@ -1,6 +1,5 @@
 package com.example.phong.g_market;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,15 +12,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.phong.g_market.adapter.BannerAdapter;
 import com.example.phong.g_market.adapter.CategoryAdapter;
@@ -29,15 +23,13 @@ import com.example.phong.g_market.adapter.ProductAdapter;
 import com.example.phong.g_market.cart.MyCartActivity;
 import com.example.phong.g_market.model.Category;
 import com.example.phong.g_market.model.Product;
+import com.example.phong.g_market.model.User;
 import com.example.phong.g_market.myproduct.MyProductActivity;
 import com.example.phong.g_market.product.CategoryProductActivity;
 import com.example.phong.g_market.product.ViewProductActivity;
 import com.example.phong.g_market.profile.EditProfileActivity;
-import com.example.phong.g_market.profile.RegisterActivity;
+import com.example.phong.g_market.profile.LoginActivity;
 import com.example.phong.g_market.ultil.RecyclerItemClickListener;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -61,8 +53,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RecyclerView rcCategory, rcProduct;
     private CategoryAdapter adapterCateGory;
     private ProductAdapter adapterProduct;
-    private TextView tvRegister, tvLogin, tvUsername, tvEmail;
-    private Dialog dialog;
 
     public ArrayList<Integer> imvBanner = null;
     private ArrayList<Category> arrdata;
@@ -72,14 +62,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final Integer[] mBanner = {R.drawable.banner1, R.drawable.banner2, R.drawable.banner3, R.drawable.banner4};
 
     ImageView imvMenu;
+    TextView tvName,tvEmail;
     private DrawerLayout drawerMenu;
 
-    RelativeLayout stubLogin, stubLogout,listMenu;
+    RelativeLayout listMenu;
 
     LinearLayout btnLogout;
     RelativeLayout btnMenuCart, btnMenuShop, btnMenuInfo, btnMenuOrder;
-    EditText edtEmail, edtPassword;
-    ImageButton imbLogin;
+    String userID;
+
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -91,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
 
         imvBanner = new ArrayList<>();
         arrdata = new ArrayList<Category>();
@@ -107,20 +99,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         indicator = (CircleIndicator) findViewById(R.id.indicator);
-
-        tvRegister = (TextView) findViewById(R.id.tv_register);
-        tvLogin = (TextView) findViewById(R.id.tv_login);
-        tvUsername = (TextView) findViewById(R.id.tv_UserName);
         tvEmail = (TextView) findViewById(R.id.tv_Email);
-
-        stubLogin = (RelativeLayout) findViewById(R.id.relLogin);
-        stubLogout = (RelativeLayout) findViewById(R.id.relLogout);
+        tvName = (TextView) findViewById(R.id.tv_UserName);
         listMenu = (RelativeLayout) findViewById(R.id.listMenu);
-
-        dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_login);
-        getWindow().setLayout(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT);
 
         rcCategory = (RecyclerView) findViewById(R.id.rc_category);
         rcProduct = (RecyclerView) findViewById(R.id.rc_product);
@@ -136,11 +117,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setupProduct();
 
         settupMenu();
-        dialogLogin();
         setupFirebaseAuth();
     }
 
     private void settupMenu() {
+
+        DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference();
+        Query jqQuery = dbreference.child(getString(R.string.dbname_users))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        jqQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Log.d(TAG,"user : " + dataSnapshot.getValue(User.class).toString());
+                tvName.setText(dataSnapshot.getValue(User.class).getUsername());
+                tvEmail.setText(dataSnapshot.getValue(User.class).getEmail());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         imvMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -153,7 +152,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnMenuCart.setOnClickListener(this);
         btnMenuShop.setOnClickListener(this);
         btnLogout.setOnClickListener(this);
-        tvRegister.setOnClickListener(this);
     }
 
     @Override
@@ -175,13 +173,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_logout:
                 FirebaseAuth.getInstance().signOut();
-                break;
-            case R.id.tv_login:
-                dialog.show();
-                break;
-            case R.id.tv_register:
-                Intent intent4 = new Intent(MainActivity.this, RegisterActivity.class);
+                Intent intent4 = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent4);
+                finish();
                 break;
         }
     }
@@ -194,44 +188,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-
-    private void dialogLogin() {
-        edtEmail = (EditText) dialog.findViewById(R.id.edtEmailLogin);
-        edtPassword = (EditText) dialog.findViewById(R.id.edtPassWordLogin);
-        imbLogin = (ImageButton) dialog.findViewById(R.id.imb_login);
-
-        imbLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String email = edtEmail.getText().toString();
-                String password = edtPassword.getText().toString();
-
-                if (isStringNull(email) | isStringNull(password)) {
-
-                } else {
-                    mAuth.signInWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
-
-                                    // If sign in fails, display a message to the user. If sign in succeeds
-                                    // the auth state listener will be notified and logic to handle the
-                                    // signed in user can be handled in the listener.
-                                    if (!task.isSuccessful()) {
-                                        Log.d(TAG, "signInWithEmail:failed", task.getException());
-                                        Toast.makeText(MainActivity.this, "failed",
-                                                Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        dialog.dismiss();
-                                    }
-                                }
-                            });
-                }
-            }
-        });
-
-    }
 
     private void setupViewPaper() {
         for (int i = 0; i < mBanner.length; i++)
@@ -261,8 +217,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setupCategory() {
 
-        DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference();
-        Query jqQuery = dbreference.child(getString(R.string.dbname_category));
+        mRef = FirebaseDatabase.getInstance().getReference();
+        Query jqQuery = mRef.child(getString(R.string.dbname_category));
         jqQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -271,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     arrdata.add(ds.getValue(Category.class));
 
-                    adapterCateGory = new CategoryAdapter(arrdata,MainActivity.this);
+                    adapterCateGory = new CategoryAdapter(arrdata, MainActivity.this);
                     adapterCateGory.notifyDataSetChanged();
                     rcCategory.setAdapter(adapterCateGory);
 
@@ -290,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onItemClick(View view, int position) {
                         // do whatever
                         String data = arrdata.get(position).getName();
-                        Log.d(TAG,"Name category " + data);
+                        Log.d(TAG, "Name category " + data);
                         Bundle bundle = new Bundle();
                         bundle.putString("data", data);
                         Intent intent = new Intent(MainActivity.this, CategoryProductActivity.class);
@@ -308,8 +264,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setupProduct() {
 
-        DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference();
-        Query jqQuery = dbreference.child(getString(R.string.dbname_product));
+        mRef = FirebaseDatabase.getInstance().getReference();
+        Query jqQuery = mRef.child(getString(R.string.dbname_product));
         jqQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -318,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     arrdataProduct.add(ds.getValue(Product.class));
 
-                    adapterProduct = new ProductAdapter(arrdataProduct,MainActivity.this);
+                    adapterProduct = new ProductAdapter(arrdataProduct, MainActivity.this);
                     adapterProduct.notifyDataSetChanged();
                     rcProduct.setAdapter(adapterProduct);
 
@@ -338,9 +294,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         // do whatever
                         String data = arrdataProduct.get(position).getName();
                         Bundle bundle = new Bundle();
-                        bundle.putString("data",data);
+                        bundle.putString("data", data);
                         Intent intent = new Intent(MainActivity.this, ViewProductActivity.class);
-                        intent.putExtra("bundle",bundle);
+                        intent.putExtra("bundle", bundle);
                         startActivity(intent);
                     }
 
@@ -354,27 +310,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /* ------------------------- Fire Base ----------------------------*/
 
-    private void checkCurrentUser(FirebaseUser user) {
-        if (user == null) {
-            stubLogout.setVisibility(View.GONE);
-            stubLogin.setVisibility(View.VISIBLE);
-            btnLogout.setVisibility(View.GONE);
-            listMenu.setVisibility(View.GONE);
-
-            tvLogin.setOnClickListener(this);
-            tvRegister.setOnClickListener(this);
-
-        } else {
-            stubLogout.setVisibility(View.VISIBLE);
-            stubLogin.setVisibility(View.GONE);
-            btnLogout.setVisibility(View.VISIBLE);
-            listMenu.setVisibility(View.VISIBLE);
-            btnLogout.setOnClickListener(this);
+    private void checkCurrentUser(FirebaseUser user){
+        if(user == null){
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
         }
     }
+
     private void setupFirebaseAuth() {
 
         mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mRef = mFirebaseDatabase.getReference();
+        userID = mAuth.getCurrentUser().getUid();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -394,6 +345,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // ...
             }
         };
+
     }
 
 

@@ -173,6 +173,7 @@ public class AddCartActivity extends AppCompatActivity implements View.OnClickLi
         String newPhotoKey = mRef.child(getString(R.string.dbname_my_cart)).push().getKey();
 
         cart.setCartId(newPhotoKey);
+        cart.setUserId(FirebaseAuth.getInstance().getCurrentUser().getUid());
         cart.setProductId(productId);
         cart.setImagesProduct(images);
         cart.setNameProduct(name);

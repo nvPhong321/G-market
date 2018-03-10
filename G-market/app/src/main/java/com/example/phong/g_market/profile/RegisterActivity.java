@@ -3,11 +3,10 @@ package com.example.phong.g_market.profile;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatEditText;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 
 import com.example.phong.g_market.R;
 import com.example.phong.g_market.ultil.FirebaseMethod;
@@ -24,9 +23,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     public static final String TAG = "Activity Register";
 
-    ImageView imvBack;
     Button btnRegister;
-    EditText edtEmail,edtPassword,edtFullName;
+    AppCompatEditText edtEmail,edtPassword,edtFullName;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -44,10 +42,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         firebaseMethods = new FirebaseMethod(this);
 
-        imvBack = (ImageView) findViewById(R.id.imvBack);
-        edtEmail = (EditText) findViewById(R.id.edtEmailRegister);
-        edtFullName = (EditText) findViewById(R.id.edtNameRegister);
-        edtPassword = (EditText) findViewById(R.id.edtPasswordRegister);
+        edtEmail = (AppCompatEditText) findViewById(R.id.edtEmailRegister);
+        edtFullName = (AppCompatEditText) findViewById(R.id.edtNameRegister);
+        edtPassword = (AppCompatEditText) findViewById(R.id.edtPasswordRegister);
         btnRegister = (Button) findViewById(R.id.btn_register);
 
         Button();
@@ -65,13 +62,6 @@ public class RegisterActivity extends AppCompatActivity {
                 if(checkInput(email,password,username)) {
                     firebaseMethods.registerNewEmail(email, password, username);
                 }
-            }
-        });
-
-        imvBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
             }
         });
     }

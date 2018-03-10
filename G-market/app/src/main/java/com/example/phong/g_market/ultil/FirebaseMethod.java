@@ -40,6 +40,7 @@ public class FirebaseMethod {
     private Activity mContext;
 
     public FirebaseMethod(Activity context) {
+
         mContext = context;
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -141,7 +142,10 @@ public class FirebaseMethod {
     }
 
     public void addNewUser(String email, String username) {
-        User user = new User(userID, email, username);
+        User user = new User();
+        user.setUserid(userID);
+        user.setUsername(username);
+        user.setEmail(email);
 
         mRef.child(mContext.getString(R.string.dbname_users))
                 .child(userID)

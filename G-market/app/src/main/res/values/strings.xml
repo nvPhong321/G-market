@@ -19,4 +19,5 @@
     <string name="field_product_name_cart">nameProduct</string>
     <string name="field_cart_summary">summary</string>
     <string name="field_cart_id">cartId</string>
+    <string name="title_activity_payment_detail">PaymentDetailActivity</string>
 </resources>

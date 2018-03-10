@@ -1,6 +1,8 @@
 package com.example.phong.g_market.cart;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -9,10 +11,12 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.phong.g_market.R;
 import com.example.phong.g_market.adapter.MyCartAdapter;
 import com.example.phong.g_market.model.Cart;
+import com.example.phong.g_market.ultil.FilePaths;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -21,10 +25,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.paypal.android.sdk.payments.PayPalConfiguration;
+import com.paypal.android.sdk.payments.PayPalService;
+import com.paypal.android.sdk.payments.PaymentActivity;
+import com.paypal.android.sdk.payments.PaymentConfirmation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MyCartActivity extends AppCompatActivity {
 
@@ -35,11 +41,16 @@ public class MyCartActivity extends AppCompatActivity {
 
     private MyCartAdapter adapterMyCart;
     private ArrayList<Cart> arrdataCart;
-    private ArrayList<String> arrdataCartID;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mRef;
+
+    public static final int PAYPAL_REQUEST_CODE = 7171;
+
+    public static PayPalConfiguration pay = new PayPalConfiguration()
+            .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
+            .clientId(FilePaths.CLIENT_ID_PAYPAL);
 
 
     @Override
@@ -47,15 +58,25 @@ public class MyCartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_cart);
 
+        Intent intent = new Intent(this,PayPalService.class);
+        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,pay);
+        startService(intent);
+
+        mAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mRef = mFirebaseDatabase.getReference();
+
         arrdataCart = new ArrayList<>();
-        arrdataCartID = new ArrayList<>();
 
         imvBack = (ImageView) findViewById(R.id.imvBack);
+        imvDel = (ImageView) findViewById(R.id.imv_delete);
 
         rcMyCart = (RecyclerView) findViewById(R.id.rc_my_cart);
         LinearLayoutManager lnProduct = new LinearLayoutManager(this);
         lnProduct.setOrientation(LinearLayoutManager.VERTICAL);
         rcMyCart.setLayoutManager(lnProduct);
+        adapterMyCart = new MyCartAdapter(arrdataCart, MyCartActivity.this);
+        rcMyCart.setAdapter(adapterMyCart);
 
         Button();
         setupProduct();
@@ -63,27 +84,35 @@ public class MyCartActivity extends AppCompatActivity {
 
     }
 
-    private void getCartId() {
-        DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference();
-        Query jqQuery = dbreference.child(getString(R.string.dbname_my_cart))
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        jqQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == PAYPAL_REQUEST_CODE){
+            if(resultCode == RESULT_OK){
+                PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+                if(confirmation != null){
 
-                    Log.d(TAG, "ArrDataID:" + ds.child(getString(R.string.field_cart_id)).getValue().toString());
-                    arrdataCartID.add(ds.child(getString(R.string.field_cart_id)).getValue().toString());
+                    String paymentDetail = confirmation.getProofOfPayment().getState();
+                    if(paymentDetail.equals("approved")){
+                        Toast.makeText(MyCartActivity.this,"Thanh toán thành công ", Toast.LENGTH_SHORT).show();
+                        for (int i = 0; i < arrdataCart.size(); i++) {
+                            if (arrdataCart.get(i).isCheckClick()) {
+                                mRef.child(getString(R.string.dbname_my_cart))
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child(arrdataCart.get(i).getCartId())
+                                        .removeValue();
+                                arrdataCart.remove(i);
+                                i--;
+                                adapterMyCart.notifyDataSetChanged();
+                            }
+                        }
+                    }
                 }
-
-                setupProduct();
+            }else if(resultCode == Activity.RESULT_CANCELED){
+                Toast.makeText(this,"Cancel",Toast.LENGTH_SHORT).show();
+            }else if(resultCode == PaymentActivity.RESULT_EXTRAS_INVALID){
+                Toast.makeText(this,"Invalid",Toast.LENGTH_SHORT).show();
             }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        }
     }
 
     private void setupProduct() {
@@ -95,25 +124,12 @@ public class MyCartActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (final DataSnapshot ds : dataSnapshot.getChildren()) {
 
-                        Cart cart = new Cart();
-
-                        Map<String, Object> objectsMap = (HashMap<String, Object>) ds.getValue();
-                        cart.setCartId(objectsMap.get(getString(R.string.field_cart_id)).toString());
-                        cart.setImagesProduct(objectsMap.get(getString(R.string.field_product_images)).toString());
-                        cart.setSummary(objectsMap.get(getString(R.string.field_cart_summary)).toString());
-                        cart.setAmmount(objectsMap.get(getString(R.string.field_product_ammount)).toString());
-                        cart.setCost(objectsMap.get(getString(R.string.field_product_cost)).toString());
-                        cart.setNameProduct(objectsMap.get(getString(R.string.field_product_name_cart)).toString());
-                        cart.setProductId(objectsMap.get(getString(R.string.field_product_id)).toString());
-
-                        arrdataCart.add(cart);
-                        Log.d(TAG, "ArrData:" + arrdataCart.toString());
+                        arrdataCart.add(ds.getValue(Cart.class));
+                        adapterMyCart.notifyDataSetChanged();
+                         Log.d(TAG,"Data " + arrdataCart);
 
                     }
 
-                    adapterMyCart = new MyCartAdapter(arrdataCart, MyCartActivity.this);
-                    adapterMyCart.notifyDataSetChanged();
-                    rcMyCart.setAdapter(adapterMyCart);
                 }
 
                 @Override
@@ -131,6 +147,26 @@ public class MyCartActivity extends AppCompatActivity {
             }
         });
 
+        imvDel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Log.d(TAG,"Size arr : " + arrdataCart.size());
+
+                for (int i = 0; i < arrdataCart.size(); i++) {
+                    Log.d(TAG,"get position : " + arrdataCart.get(i).getCheck());
+                    if (arrdataCart.get(i).getCheck()) {
+                        mRef.child(getString(R.string.dbname_my_cart))
+                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                .child(arrdataCart.get(i).getCartId())
+                                .removeValue();
+                        arrdataCart.remove(i);
+                        i--;
+                        adapterMyCart.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
     }
 
     /* ------------------------- Fire Base ----------------------------*/

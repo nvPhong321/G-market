@@ -6,23 +6,33 @@ package com.example.phong.g_market.model;
 
 public class Cart {
 
-    private String cartId,productId;
+    private String cartId,productId,userId;
     private String imagesProduct,nameProduct,cost,ammount,summary;
-    private Boolean check;
+    private boolean check,checkClick;
 
     public Cart(){
 
     }
 
-    public Cart(String cartId, String productId, String imagesProduct, String nameProduct, String cost, String ammount, String summary) {
+    public Cart(String cartId, String productId, String userId, String imagesProduct, String nameProduct, String cost, String ammount, String summary) {
         this.cartId = cartId;
         this.productId = productId;
+        this.userId = userId;
         this.imagesProduct = imagesProduct;
         this.nameProduct = nameProduct;
         this.cost = cost;
         this.ammount = ammount;
         this.summary = summary;
         this.check = false;
+        this.checkClick = false;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getImagesProduct() {
@@ -81,11 +91,19 @@ public class Cart {
         this.summary = summary;
     }
 
-    public Boolean getCheck() {
+    public boolean getCheck() {
         return check;
     }
 
     public void setCheck(Boolean check) {
         this.check = check;
+    }
+
+    public boolean isCheckClick() {
+        return checkClick;
+    }
+
+    public void setCheckClick(boolean checkClick) {
+        this.checkClick = checkClick;
     }
 }
